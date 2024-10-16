@@ -2,6 +2,7 @@ using Entity.Abstract;
 
 namespace Entity.Concrete;
 
+// ToDoItem sınıfı, ITodoItem arayüzünü uygulayarak görev nesnelerini temsil eder.
 public class ToDoItem : ITodoItem
 {
     public int Id { get; set; }
@@ -11,6 +12,7 @@ public class ToDoItem : ITodoItem
     public DateTime CreatedDate { get; set; }
     public int UserId { get; set; }
 
+    // Constructor: Görev oluşturulurken gerekli bilgileri alır ve atanır.
     public ToDoItem(string title, string description, int userId)
     {
         Title = title;

@@ -2,6 +2,7 @@ using Entity.Abstract;
 
 namespace Entity.Concrete;
 
+// User sınıfı, IUser arayüzünü uygulayarak kullanıcı nesnelerini temsil eder.
 public class User : IUser
 {
     public int Id { get; set; }
@@ -11,8 +12,7 @@ public class User : IUser
     public DateTime CreatedAt { get; set; }
     
     /*
-     * Constructor
-     * Kullanıcı nesnelerini oluştururken gerekli bilgileri dışarıdan almak istediğim için oluşturdum. 
+     * Constructor : Kullanıcı oluşturulurken gerekli bilgileri alır ve atanır.
      */
     public User(string username, string password, string role)
     {

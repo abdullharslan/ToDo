@@ -1,5 +1,10 @@
+/*
+ * Entity katmanı, veritabanındaki tabloları ve uygulamanın veri modellerini temsil eder.
+ * Kullanıcı ve yapılacaklar gibi varlıkların tanımlandığı yerdir.
+ */
 namespace Entity.Abstract;
 
+// IUser arayüzü, kullanıcı nesneleri için temel özellikleri tanımlar.
 public interface IUser
 {
     public int Id { get; set; }
