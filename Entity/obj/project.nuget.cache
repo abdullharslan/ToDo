@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "GrNI3/OnDY4=",
+  "dgSpecHash": "CVQzupWVv1U=",
   "success": true,
   "projectFilePath": "/Users/abdullah/Desktop/ToDo/Entity/Entity.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/Users/abdullah/.nuget/packages/microsoft.netcore.app.ref/8.0.8/microsoft.netcore.app.ref.8.0.8.nupkg.sha512",
+    "/Users/abdullah/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.8/microsoft.aspnetcore.app.ref.8.0.8.nupkg.sha512"
+  ],
   "logs": []
 }

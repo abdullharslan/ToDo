@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "wKw7M/vyqn4=",
+  "dgSpecHash": "ogWzjeIBdjM=",
   "success": true,
   "projectFilePath": "/Users/abdullah/Desktop/ToDo/ConsoleUI/ConsoleUI.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/Users/abdullah/.nuget/packages/microsoft.netcore.app.ref/8.0.8/microsoft.netcore.app.ref.8.0.8.nupkg.sha512",
+    "/Users/abdullah/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.8/microsoft.aspnetcore.app.ref.8.0.8.nupkg.sha512",
+    "/Users/abdullah/.nuget/packages/microsoft.netcore.app.host.osx-arm64/8.0.8/microsoft.netcore.app.host.osx-arm64.8.0.8.nupkg.sha512"
+  ],
   "logs": []
 }

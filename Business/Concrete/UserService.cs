@@ -42,6 +42,12 @@ public class UserService(IUserRepository userRepository) : IUserService
          * kullanıcı kaydı veritabanında güncellenir.
          * İş kurallarını burada uygula (örneğin, kullanıcı adı benzersiz olmalı)
          */
+
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        if (_userRepository.GetByUsername(user.Username) != null)
+        {
+            throw new InvalidOperationException("Bu kullanıcı adı zaten mevcut.");
+        }
         _userRepository.Add(user);
     }
     
@@ -52,6 +58,11 @@ public class UserService(IUserRepository userRepository) : IUserService
         if (user == null)
         {
             throw new ArgumentNullException(nameof(user), "Kullanıcı null olamaz.");
+        }
+        var existingUser = _userRepository.GetByUsername(user.Username);
+        if (existingUser != null && existingUser.Id != user.Id)
+        {
+            throw new InvalidOperationException("Bu kullanıcı adı zaten mevcut.");
         }
         _userRepository.Update(user);
     }

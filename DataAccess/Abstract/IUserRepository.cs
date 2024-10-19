@@ -11,6 +11,7 @@ public interface IUserRepository
     // Belirli bir kullanıcıyı getir
     User GetById(int id);
     // Yeni bir kullanıcı ekle
+    User GetByUsername(string userName);
     void Add(User user);
     // Kullanıcıyı güncelle
     void Update(User user);

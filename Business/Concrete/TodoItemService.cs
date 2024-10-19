@@ -29,17 +29,6 @@ public class TodoItemService(ITodoItemRepository todoItemRepository) : ITodoItem
         return _todoItemRepository.GetById(todoItemId); 
     }
 
-    // Görevi getirir.
-    public ToDoItem GetToDoItem(int todoItemId)
-    {
-        // Geçersiz görev kimliği durumunda bir istisna fırlatılır.
-        if (todoItemId <= 0)
-        {
-            throw new ArgumentException("Geçersiz görev");
-        }
-        return _todoItemRepository.GetById(todoItemId);
-    }
-
     // Yeni görev ekler
     public void Add(ToDoItem todoItem)
     {
@@ -69,6 +58,7 @@ public class TodoItemService(ITodoItemRepository todoItemRepository) : ITodoItem
         {
             throw new ArgumentNullException(nameof(todoItem), "Görev null olamaz.");
         }
+        _todoItemRepository.Delete(todoItem);
     }
     
     // Tüm görevleri getirir

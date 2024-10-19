@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "BoUcu0O51gk=",
+  "dgSpecHash": "lrbWUHXaKvU=",
   "success": true,
   "projectFilePath": "/Users/abdullah/Desktop/ToDo/Controllers/Controllers.csproj",
   "expectedPackageFiles": [
@@ -10,7 +10,10 @@
     "/Users/abdullah/.nuget/packages/swashbuckle.aspnetcore/6.4.0/swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
     "/Users/abdullah/.nuget/packages/swashbuckle.aspnetcore.swagger/6.4.0/swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
     "/Users/abdullah/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.4.0/swashbuckle.aspnetcore.swaggergen.6.4.0.nupkg.sha512",
-    "/Users/abdullah/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.4.0/swashbuckle.aspnetcore.swaggerui.6.4.0.nupkg.sha512"
+    "/Users/abdullah/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.4.0/swashbuckle.aspnetcore.swaggerui.6.4.0.nupkg.sha512",
+    "/Users/abdullah/.nuget/packages/microsoft.netcore.app.ref/8.0.8/microsoft.netcore.app.ref.8.0.8.nupkg.sha512",
+    "/Users/abdullah/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.8/microsoft.aspnetcore.app.ref.8.0.8.nupkg.sha512",
+    "/Users/abdullah/.nuget/packages/microsoft.netcore.app.host.osx-arm64/8.0.8/microsoft.netcore.app.host.osx-arm64.8.0.8.nupkg.sha512"
   ],
   "logs": []
 }

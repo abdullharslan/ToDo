@@ -17,7 +17,12 @@ public class UserRepository(AppDbContext appDbContext) : IUserRepository
     {
         return _appDbContext.Users.Find(id) ?? throw new InvalidOperationException();
     }
-    
+
+    public User GetByUsername(string userName)
+    {
+        return _appDbContext.Users.SingleOrDefault(u => userName == u.Username) ?? throw new InvalidOperationException();
+    }
+
     public void Add(User user)
     {
         // Veritabanına yeni kullanıcı ekler
