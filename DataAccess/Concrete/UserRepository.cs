@@ -3,14 +3,19 @@ using Entity.Concrete;
 
 namespace DataAccess.Concrete;
 
-public class UserRepository(AppDbContext appDbContext) : IUserRepository
+public class UserRepository : IUserRepository
 {
     /*
      * UserRepository sınıfının yapıcı metodu, dışarıdan bir AppDbContext nesnesi alır ve bu nesneyi _appDbContext
      * değişkenine atar. Bu sayede sınıf içinde veritabanı işlemleri için kullanılacak DbContext nesnesine erişim
      * sağlanır.
      */
-    private readonly AppDbContext _appDbContext = appDbContext;
+    private readonly AppDbContext _appDbContext;
+
+    public UserRepository(AppDbContext appDbContext)
+    {
+        _appDbContext = appDbContext;
+    }
 
     // Verilen ID ile kullanıcıyı veritabanından bulur. Kullanıcı bulunamazsa, bir InvalidOperationException fırlatır.
     public User GetById(int id)
@@ -20,7 +25,8 @@ public class UserRepository(AppDbContext appDbContext) : IUserRepository
 
     public User GetByUsername(string userName)
     {
-        return _appDbContext.Users.SingleOrDefault(u => userName == u.Username) ?? throw new InvalidOperationException();
+        return _appDbContext.Users.SingleOrDefault(u => userName == u.Username) 
+               ?? throw new InvalidOperationException();
     }
 
     public void Add(User user)

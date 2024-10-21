@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "nCiCX+h6Sgk=",
+  "dgSpecHash": "wFq9yKycPsA=",
   "success": true,
   "projectFilePath": "/Users/abdullah/Desktop/ToDo/DataAccess/DataAccess.csproj",
   "expectedPackageFiles": [
@@ -84,9 +84,7 @@
     "/Users/abdullah/.nuget/packages/system.text.json/9.0.0-rc.2.24473.5/system.text.json.9.0.0-rc.2.24473.5.nupkg.sha512",
     "/Users/abdullah/.nuget/packages/system.threading.channels/7.0.0/system.threading.channels.7.0.0.nupkg.sha512",
     "/Users/abdullah/.nuget/packages/system.threading.tasks.extensions/4.5.4/system.threading.tasks.extensions.4.5.4.nupkg.sha512",
-    "/Users/abdullah/.nuget/packages/system.windows.extensions/6.0.0/system.windows.extensions.6.0.0.nupkg.sha512",
-    "/Users/abdullah/.nuget/packages/microsoft.netcore.app.ref/8.0.8/microsoft.netcore.app.ref.8.0.8.nupkg.sha512",
-    "/Users/abdullah/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.8/microsoft.aspnetcore.app.ref.8.0.8.nupkg.sha512"
+    "/Users/abdullah/.nuget/packages/system.windows.extensions/6.0.0/system.windows.extensions.6.0.0.nupkg.sha512"
   ],
   "logs": []
 }

@@ -6,7 +6,7 @@ namespace DataAccess.Abstract;
  * ITodoItemRepository arayüzü, görev işlemleri için gerekli CRUD (Create, Read, Update, Delete) metotlarını tanımlar.
  * Bu arayüz, görevlerin veritabanında yönetilmesi için gereken temel işlevselliği sağlar.
  */
-public interface ITodoItemRepository
+public interface IToDoItemRepository
 {
     // Belirli bir görevi getir
     ToDoItem GetById(int id);

@@ -4,13 +4,24 @@ using Entity.Concrete;
 namespace DataAccess.Concrete;
 
 /*
- * ToDoItemRepository sınıfının yapıcı metodu, dışarıdan bir AppDbContext nesnesi alır ve bu nesneyi _appDbContext
- * değişkenine atar. Bu sayede sınıf içinde görevler ile ilgili veritabanı işlemleri için kullanılacak DbContext
- * nesnesine erişim sağlanır.
- */
-public class ToDoItemRepository(AppDbContext appDbContext) : ITodoItemRepository
+   * ToDoItemRepository sınıfı, görev nesneleri üzerinde CRUD (Create, Read, Update, Delete) işlemlerini 
+   * gerçekleştiren bir veri erişim katmanıdır. Bu sınıf, AppDbContext nesnesini kullanarak veritabanındaki 
+   * ToDoItems tablosu ile etkileşimde bulunur. Her bir metod, belirli görevleri bulmak, eklemek, güncellemek 
+   * ve silmek için gerekli işlevselliği sağlar.
+   */
+public class ToDoItemRepository : IToDoItemRepository
 {
-    private readonly AppDbContext _appDbContext = appDbContext;
+    /*
+     * ToDoItemRepository sınıfının yapıcı metodu, dışarıdan bir AppDbContext nesnesi alır ve bu nesneyi
+     * _appDbContext değişkenine atar. Bu sayede sınıf içinde görevler ile ilgili veritabanı işlemleri için
+     * kullanılacak DbContext nesnesine erişim sağlanır.
+     */
+    private readonly AppDbContext _appDbContext;
+
+    public ToDoItemRepository(AppDbContext appDbContext)
+    {
+        _appDbContext = appDbContext;
+    }
 
     public ToDoItem GetById(int id)
     {
