@@ -6,19 +6,21 @@ namespace Entity.Concrete;
 public class ToDoItem : ITodoItem
 {
     public int Id { get; set; }
-    public string Title { get; set; }
-    public string Description { get; set; }
+    public string Title { get; set; } = String.Empty;
+    public string Description { get; set; } = String.Empty;
     public bool IsCompleted { get; set; }
-    public DateTime CreatedDate { get; set; }
+    public DateTime CreatedAt { get; set; }
     public int UserId { get; set; }
 
     // Constructor: Görev oluşturulurken gerekli bilgileri alır ve atanır.
     public ToDoItem(string title, string description, int userId)
     {
-        Title = title;
-        Description = description;
+        Title = string.IsNullOrWhiteSpace(title) ? 
+            throw new ArgumentException("Başlık boş bırakılamaz.", nameof(title)) : title;
+        Description = string.IsNullOrWhiteSpace(description) ? 
+            throw new ArgumentException("Açıklama boş bırakılamaz.", nameof(description)) : description;
         UserId = userId;
-        CreatedDate = DateTime.Now;
+        CreatedAt = DateTime.Now;
         IsCompleted = false;
     }
 }

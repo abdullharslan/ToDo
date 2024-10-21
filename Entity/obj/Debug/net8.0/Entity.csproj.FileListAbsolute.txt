@@ -1,0 +1,15 @@
+/Users/abdullah/Desktop/ToDo/Entity/bin/Debug/net8.0/Entity.deps.json
+/Users/abdullah/Desktop/ToDo/Entity/bin/Debug/net8.0/Entity.runtimeconfig.json
+/Users/abdullah/Desktop/ToDo/Entity/bin/Debug/net8.0/Entity.dll
+/Users/abdullah/Desktop/ToDo/Entity/bin/Debug/net8.0/Entity.pdb
+/Users/abdullah/Desktop/ToDo/Entity/obj/Debug/net8.0/Entity.csproj.AssemblyReference.cache
+/Users/abdullah/Desktop/ToDo/Entity/obj/Debug/net8.0/Entity.GeneratedMSBuildEditorConfig.editorconfig
+/Users/abdullah/Desktop/ToDo/Entity/obj/Debug/net8.0/Entity.AssemblyInfoInputs.cache
+/Users/abdullah/Desktop/ToDo/Entity/obj/Debug/net8.0/Entity.AssemblyInfo.cs
+/Users/abdullah/Desktop/ToDo/Entity/obj/Debug/net8.0/Entity.csproj.CoreCompileInputs.cache
+/Users/abdullah/Desktop/ToDo/Entity/obj/Debug/net8.0/Entity.sourcelink.json
+/Users/abdullah/Desktop/ToDo/Entity/obj/Debug/net8.0/Entity.dll
+/Users/abdullah/Desktop/ToDo/Entity/obj/Debug/net8.0/refint/Entity.dll
+/Users/abdullah/Desktop/ToDo/Entity/obj/Debug/net8.0/Entity.pdb
+/Users/abdullah/Desktop/ToDo/Entity/obj/Debug/net8.0/Entity.genruntimeconfig.cache
+/Users/abdullah/Desktop/ToDo/Entity/obj/Debug/net8.0/ref/Entity.dll

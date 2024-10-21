@@ -7,6 +7,6 @@ namespace Entity.Abstract;
         public string Title { get; set; }
         public string Description { get; set; }
         public bool IsCompleted { get; set; }
-        DateTime CreatedDate { get; set; }
+        DateTime CreatedAt { get; set; }
         int UserId { get; set; }
     }
