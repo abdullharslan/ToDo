@@ -9,15 +9,20 @@ namespace Business.Concrete;
  * kullanıcıların eklenmesi, güncellenmesi, silinmesi ve kullanıcı bilgilerini alma işlemlerini gerçekleştirir. Ayrıca,
  * iş kurallarını uygulayarak veritabanı ile etkileşimde bulunur.
  */
-public class UserService(IUserRepository userRepository) : IUserService
+public class UserService : IUserService
 {
     /*
      * UserService sınıfının yapıcı metodu, dışarıdan bir IUserRepository nesnesi alır ve bu nesneyi _userRepository
      * değişkenine atar. Bu sayede sınıf içinde kullanıcı işlemleri için kullanılacak repository nesnesine erişim
      * sağlanır ve kullanıcıların eklenmesi, güncellenmesi, silinmesi gibi işlemler gerçekleştirilebilir.
      */
-    private readonly IUserRepository _userRepository = userRepository;
-    
+    private readonly IUserRepository _userRepository;
+
+    public UserService(IUserRepository userRepository)
+    {
+        _userRepository = userRepository;
+    }
+
     // Kullanıcı kimliğini getirir
     public User GetUser(int userId)
     {

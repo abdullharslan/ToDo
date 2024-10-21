@@ -3,7 +3,7 @@ using Entity.Concrete;
 namespace Business.Abstract;
 
 // Görevler ile ilgili iş kurallarını tanımlayacak arayüz
-public interface ITodoItemService
+public interface IToDoItemService
 {
     // Belirli bir görevi kimliği ile getir
     ToDoItem GetTodoItem(int todoItemId);

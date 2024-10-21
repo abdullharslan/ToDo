@@ -9,14 +9,19 @@ namespace Business.Concrete;
  * görevlerin eklenmesi, güncellenmesi, silinmesi ve görev bilgilerini alma işlemlerini gerçekleştirir. Ayrıca, iş
  * kurallarını uygulayarak veritabanı ile etkileşimde bulunur.
  */
-public class TodoItemService(ITodoItemRepository todoItemRepository) : ITodoItemService
+public class ToDoItemService : IToDoItemService
 {
     /*
      * TodoItemService sınıfının yapıcı metodu, dışarıdan bir ITodoItemRepository nesnesi alır ve bu nesneyi
      * _todoItemRepository değişkenine atar. Bu sayede sınıf içinde görev işlemleri için kullanılacak repository
      * nesnesine erişim sağlanır ve görevlerin eklenmesi, güncellenmesi, silinmesi gibi işlemler gerçekleştirilebilir.
      */
-    private readonly ITodoItemRepository _todoItemRepository = todoItemRepository;
+    private readonly IToDoItemRepository _toDoItemRepository;
+
+    public ToDoItemService(IToDoItemRepository toDoItemRepository)
+    {
+        _toDoItemRepository = toDoItemRepository;
+    }
 
     // Belirtilen kimliğe sahip görevi getirir.
     public ToDoItem GetTodoItem(int todoItemId)
@@ -26,7 +31,7 @@ public class TodoItemService(ITodoItemRepository todoItemRepository) : ITodoItem
         {
             throw new ArgumentException("Geçersiz görev kimliği.");
         }
-        return _todoItemRepository.GetById(todoItemId); 
+        return _toDoItemRepository.GetById(todoItemId); 
     }
 
     // Yeni görev ekler
@@ -36,7 +41,7 @@ public class TodoItemService(ITodoItemRepository todoItemRepository) : ITodoItem
         {
             throw new ArgumentNullException(nameof(todoItem), "Görev null olamaz.");
         }
-        _todoItemRepository.Add(todoItem);
+        _toDoItemRepository.Add(todoItem);
     }
     
     // Görevi günceller
@@ -47,7 +52,7 @@ public class TodoItemService(ITodoItemRepository todoItemRepository) : ITodoItem
         {
             throw new ArgumentNullException(nameof(todoItem), "Görev null olamaz.");
         }
-        _todoItemRepository.Update(todoItem);
+        _toDoItemRepository.Update(todoItem);
     }
     
     // Görevi siler
@@ -58,12 +63,12 @@ public class TodoItemService(ITodoItemRepository todoItemRepository) : ITodoItem
         {
             throw new ArgumentNullException(nameof(todoItem), "Görev null olamaz.");
         }
-        _todoItemRepository.Delete(todoItem);
+        _toDoItemRepository.Delete(todoItem);
     }
     
     // Tüm görevleri getirir
     public IEnumerable<ToDoItem> GetAll()
     {
-        return _todoItemRepository.GetAll();
+        return _toDoItemRepository.GetAll();
     }
 }
