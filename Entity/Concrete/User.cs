@@ -21,10 +21,4 @@ public class User : IUser
         // Kullanıcı oluşturulduğunda zaman damgası ekle
         CreatedAt = DateTime.Now;
     }
-    
-    public class LoginRequest
-    {
-        public string? Username { get; set; }
-        public string? Password { get; set; }
-    }
 }
