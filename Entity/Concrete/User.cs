@@ -26,7 +26,7 @@ public class User : EntityBase
         Username = username ?? throw new ArgumentNullException(nameof(username));
         Password = password ?? throw new ArgumentNullException(nameof(password));
         Role = "User";
-        CreatedAt = DateTime.Now;
+        CreatedAt = DateTime.UtcNow;
     }
 
     public User(string username, string password, string role)
