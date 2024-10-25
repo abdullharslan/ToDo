@@ -24,9 +24,8 @@ public class UserService : IUserService
     }
 
     // Kullanıcı kimliğini getirir
-    public User GetUser(int userId)
+    public User? GetUser(int userId)
     {
-        // Geçersiz kullanıcı kimliği durumunda bir istisna fırlatılır.
         if (userId <= 0)
         {
             throw new ArgumentException("Geçersiz kullanıcı kimliği.");
@@ -42,18 +41,20 @@ public class UserService : IUserService
         {
             throw new ArgumentNullException(nameof(user), "Kullanıcı null olamaz.");
         }
-        /*
-         * Kullanıcıyı veritabanına ekler. Bu işlem yan etki yaratır ve ekleme sonucunu döndürmez; işlem tamamlandığında
-         * kullanıcı kaydı veritabanında güncellenir.
-         * İş kurallarını burada uygula (örneğin, kullanıcı adı benzersiz olmalı)
-         */
-
-        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (_userRepository.GetByUsername(user.Username) != null)
         {
             throw new InvalidOperationException("Bu kullanıcı adı zaten mevcut.");
         }
-        _userRepository.Add(user);
+
+        try
+        {
+            _userRepository.Add(user);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Kullanıcı '{user.Username}' eklenirken bir hata oluştu. Lütfen tekrar deneyin.", ex);
+        }
+        
     }
     
     // Kullanıcıyı günceller
@@ -69,7 +70,15 @@ public class UserService : IUserService
         {
             throw new InvalidOperationException("Bu kullanıcı adı zaten mevcut.");
         }
-        _userRepository.Update(user);
+        
+        try
+        {
+            _userRepository.Update(user);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Kullanıcı '{user.Username}' eklenirken bir hata oluştu. Lütfen tekrar deneyin.", ex);
+        }
     }
 
     // Kullanıcıyı siler
@@ -80,6 +89,14 @@ public class UserService : IUserService
         {
             throw new ArgumentNullException(nameof(user), "Kullanıcı null olamaz.");
         }
-        _userRepository.Delete(user);
+        
+        try
+        {
+            _userRepository.Delete(user);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Kullanıcı '{user.Username}' eklenirken bir hata oluştu. Lütfen tekrar deneyin.", ex);
+        }
     }
 }

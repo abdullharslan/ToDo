@@ -1,5 +1,4 @@
 /Users/abdullah/Desktop/ToDo/Business/bin/Debug/net8.0/Business.deps.json
-/Users/abdullah/Desktop/ToDo/Business/bin/Debug/net8.0/Business.runtimeconfig.json
 /Users/abdullah/Desktop/ToDo/Business/bin/Debug/net8.0/Business.dll
 /Users/abdullah/Desktop/ToDo/Business/bin/Debug/net8.0/Business.pdb
 /Users/abdullah/Desktop/ToDo/Business/bin/Debug/net8.0/DataAccess.dll
@@ -16,5 +15,4 @@
 /Users/abdullah/Desktop/ToDo/Business/obj/Debug/net8.0/Business.dll
 /Users/abdullah/Desktop/ToDo/Business/obj/Debug/net8.0/refint/Business.dll
 /Users/abdullah/Desktop/ToDo/Business/obj/Debug/net8.0/Business.pdb
-/Users/abdullah/Desktop/ToDo/Business/obj/Debug/net8.0/Business.genruntimeconfig.cache
 /Users/abdullah/Desktop/ToDo/Business/obj/Debug/net8.0/ref/Business.dll

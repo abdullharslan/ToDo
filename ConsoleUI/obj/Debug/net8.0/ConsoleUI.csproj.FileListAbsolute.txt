@@ -1,0 +1,15 @@
+/Users/abdullah/Desktop/ToDo/ConsoleUI/bin/Debug/net8.0/ConsoleUI
+/Users/abdullah/Desktop/ToDo/ConsoleUI/bin/Debug/net8.0/ConsoleUI.deps.json
+/Users/abdullah/Desktop/ToDo/ConsoleUI/bin/Debug/net8.0/ConsoleUI.runtimeconfig.json
+/Users/abdullah/Desktop/ToDo/ConsoleUI/bin/Debug/net8.0/ConsoleUI.dll
+/Users/abdullah/Desktop/ToDo/ConsoleUI/bin/Debug/net8.0/ConsoleUI.pdb
+/Users/abdullah/Desktop/ToDo/ConsoleUI/obj/Debug/net8.0/ConsoleUI.GeneratedMSBuildEditorConfig.editorconfig
+/Users/abdullah/Desktop/ToDo/ConsoleUI/obj/Debug/net8.0/ConsoleUI.AssemblyInfoInputs.cache
+/Users/abdullah/Desktop/ToDo/ConsoleUI/obj/Debug/net8.0/ConsoleUI.AssemblyInfo.cs
+/Users/abdullah/Desktop/ToDo/ConsoleUI/obj/Debug/net8.0/ConsoleUI.csproj.CoreCompileInputs.cache
+/Users/abdullah/Desktop/ToDo/ConsoleUI/obj/Debug/net8.0/ConsoleUI.sourcelink.json
+/Users/abdullah/Desktop/ToDo/ConsoleUI/obj/Debug/net8.0/ConsoleUI.dll
+/Users/abdullah/Desktop/ToDo/ConsoleUI/obj/Debug/net8.0/refint/ConsoleUI.dll
+/Users/abdullah/Desktop/ToDo/ConsoleUI/obj/Debug/net8.0/ConsoleUI.pdb
+/Users/abdullah/Desktop/ToDo/ConsoleUI/obj/Debug/net8.0/ConsoleUI.genruntimeconfig.cache
+/Users/abdullah/Desktop/ToDo/ConsoleUI/obj/Debug/net8.0/ref/ConsoleUI.dll

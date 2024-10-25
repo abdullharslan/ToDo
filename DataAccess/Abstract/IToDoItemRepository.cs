@@ -8,14 +8,9 @@ namespace DataAccess.Abstract;
  */
 public interface IToDoItemRepository
 {
-    // Belirli bir görevi getir
-    ToDoItem GetById(int id);
-    // Tüm görevleri getir
-    IEnumerable<ToDoItem> GetAll(); 
-    // Yeni bir görev ekle
+    ToDoItem? GetById(int id);
+    IEnumerable<ToDoItem> GetFilteredItems(bool? isCompleted = null); 
     void Add(ToDoItem todoItem);
-    // Görevi güncelle
     void Update(ToDoItem todoItem);
-    // Görevi sil
     void Delete(ToDoItem todoItem);
 }

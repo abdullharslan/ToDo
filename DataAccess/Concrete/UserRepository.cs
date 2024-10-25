@@ -18,44 +18,35 @@ public class UserRepository : IUserRepository
     }
 
     // Verilen ID ile kullanıcıyı veritabanından bulur. Kullanıcı bulunamazsa, bir InvalidOperationException fırlatır.
-    public User GetById(int id)
+    public User? GetById(int id)
     {
-        return _appDbContext.Users.Find(id) ?? throw new InvalidOperationException();
+        return _appDbContext.Users.Find(id);
     }
 
-    public User GetByUsername(string userName)
+    // Kullanıcıyı arar ve getirir, eğer kullanıcıyı bulamazsa hata mesajı yollar.
+    public User? GetByUsername(string userName)
     {
-        return _appDbContext.Users.SingleOrDefault(u => userName == u.Username) 
-               ?? throw new InvalidOperationException();
+        return _appDbContext.Users.SingleOrDefault(u => userName == u.Username);
     }
 
+    // Kullanıcı ekler
     public void Add(User user)
     {
-        // Veritabanına yeni kullanıcı ekler
         _appDbContext.Users.Add(user);
-        // Değişikliği kaydeder
         _appDbContext.SaveChanges();
     }
     
+    // Kullanıcıyı günceller
     public void Update(User user)
     {
-        // Kullanıcıyı günceller
         _appDbContext.Users.Update(user);
-        // Değişikliği kaydeder
         _appDbContext.SaveChanges();
     }
     
+    // Kullanıcıyı siler
     public void Delete(User? user)
     {
-        // Kullanıcı nesnesi null ise
-        if (user == null)
-        {
-            // Hiçbir şey yapma, çık
-            return;
-        }
-        // Kullanıcıyı veritabanından sil
         _appDbContext.Users.Remove(user);
-        // Değişikliği kaydeder
         _appDbContext.SaveChanges();
     }
 }

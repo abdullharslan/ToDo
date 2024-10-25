@@ -1,4 +1,5 @@
 using Entity.Concrete;
+using Entity.DTO;
 
 namespace Business.Abstract;
 
@@ -10,12 +11,8 @@ namespace Business.Abstract;
  */
 public interface IAuthService
 {
-    // Kullanıcıdan bir JWT oluşturur
     string GenerateToken(User user);
-    // Yeni bir kullanıcı kaydı oluşturur
-    User RegisterUser(User user, string password);
-    // Kullanıcı adı ve şifre ile kullanıcı girişini doğrular.
-    User Login(string username, string password);
-    // Belirli bir kullanıcı adının daha önce kayıtlı olup olmadığını kontrol eder.
+    void RegisterUser(RegisterDTO registerDto);
+    User Login(LoginDTO loginDto);
     bool UserExists(string username);
 }

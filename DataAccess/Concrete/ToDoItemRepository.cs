@@ -23,45 +23,40 @@ public class ToDoItemRepository : IToDoItemRepository
         _appDbContext = appDbContext;
     }
 
-    public ToDoItem GetById(int id)
+    // Belirtilen ID'ye sahip görevi veritabanından bulur ve döndürür.
+    public ToDoItem? GetById(int id)
     {
-        // Belirtilen ID'ye sahip görevi veritabanından bulur. Bulamazsa, bir InvalidOperationException fırlatır.
-        return _appDbContext.ToDoItems.Find(id) ?? throw new InvalidOperationException("Görev bulunamadı.");
+        return _appDbContext.ToDoItems.Find(id);
     }
-
-    public IEnumerable<ToDoItem> GetAll()
+    
+    // Belirtilen filtreye göre görevleri döndürür. Eğer filtre belirtilmemişse (null) tüm görevleri listeler.
+    public IEnumerable<ToDoItem> GetFilteredItems(bool? isCompleted = null)
     {
-        // Tüm görevleri getir
-        return _appDbContext.ToDoItems.ToList();
+        return isCompleted == null
+            ? _appDbContext.ToDoItems.ToList()
+            : _appDbContext.ToDoItems
+                .Where(item => item.IsCompleted == isCompleted)
+                .ToList();
     }
-
+    
+    // Yeni bir görevi veritabanına ekler.
     public void Add(ToDoItem todoItem)
     {
-        // Yeni bir göreve ekler.
         _appDbContext.ToDoItems.Add(todoItem);
-        // Değişikliği kaydeder.
         _appDbContext.SaveChanges();
     }
 
+    // Var olan bir görevi günceller.
     public void Update(ToDoItem todoItem)
     {
-        // Görevi günceller.
         _appDbContext.ToDoItems.Update(todoItem);
-        // Değişikliği kaydeder.
         _appDbContext.SaveChanges();
     }
 
+    // Verilen görevi siler.
     public void Delete(ToDoItem? todoItem)
     {
-        // Kullanıcı nesnesi null ise
-        if (todoItem == null)
-        {
-            // Hiçbir işlem yapma ve çık
-            return;
-        }
-        // Kullanıcıyı sil
         _appDbContext.ToDoItems.Remove(todoItem);
-        // Değişikliği kaydet
         _appDbContext.SaveChanges();
     }
 }

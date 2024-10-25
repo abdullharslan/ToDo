@@ -8,13 +8,9 @@ namespace DataAccess.Abstract;
  */
 public interface IUserRepository
 {
-    // Belirli bir kullanıcıyı getir
-    User GetById(int id);
-    // Yeni bir kullanıcı ekle
-    User GetByUsername(string userName);
+    User? GetById(int id);
+    User? GetByUsername(string userName);
     void Add(User user);
-    // Kullanıcıyı güncelle
     void Update(User user);
-    // Kullanıcıyı sil
     void Delete(User user);
 }

@@ -1,6 +1,79 @@
 @Controllers_HostAddress = http://localhost:5064
 
-GET {{Controllers_HostAddress}}/weatherforecast/
+### Kullanıcı Ekleme
+POST {{Controllers_HostAddress}}/api/user
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 1,
+  "username": "testuser",
+  "password": "testpassword",
+  "role": "User"
+}
+
+###
+
+### Kullanıcı Bilgilerini Alma
+GET {{Controllers_HostAddress}}/api/user/1
+Accept: application/json
+
+###
+
+### Kullanıcı Güncelleme
+PUT {{Controllers_HostAddress}}/api/user/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 1,
+  "username": "updateduser",
+  "password": "newpassword",
+  "role": "User"
+}
+
+###
+
+### Kullanıcı Silme
+DELETE {{Controllers_HostAddress}}/api/user/1
+Accept: application/json
+
+###
+
+### Görev Ekleme
+POST {{Controllers_HostAddress}}/api/todoitem
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 1,
+  "title": "Yeni Görev",
+  "isCompleted": false
+}
+
+###
+
+### Görev Bilgilerini Alma
+GET {{Controllers_HostAddress}}/api/todoitem/1
+Accept: application/json
+
+###
+
+### Görev Güncelleme
+PUT {{Controllers_HostAddress}}/api/todoitem/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 1,
+  "title": "Güncellenmiş Görev",
+  "isCompleted": true
+}
+
+###
+
+### Görev Silme
+DELETE {{Controllers_HostAddress}}/api/todoitem/1
 Accept: application/json
 
 ###

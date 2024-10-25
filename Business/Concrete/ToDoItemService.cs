@@ -24,12 +24,11 @@ public class ToDoItemService : IToDoItemService
     }
 
     // Belirtilen kimliğe sahip görevi getirir.
-    public ToDoItem GetTodoItem(int todoItemId)
+    public ToDoItem? GetTodoItem(int todoItemId)
     {
-        // Geçersiz kimlik durumunda bir ArgumentException fırlatılır.
         if (todoItemId <= 0)
         {
-            throw new ArgumentException("Geçersiz görev kimliği.");
+            throw new ArgumentException("Geçersiz görev kimliği. Lütfen geçerli bir kimlik giriniz.");
         }
         return _toDoItemRepository.GetById(todoItemId); 
     }
@@ -41,34 +40,57 @@ public class ToDoItemService : IToDoItemService
         {
             throw new ArgumentNullException(nameof(todoItem), "Görev null olamaz.");
         }
-        _toDoItemRepository.Add(todoItem);
+
+        try
+        {
+            _toDoItemRepository.Add(todoItem);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("Görev eklenirken bir hata oluştu. Lütfen tekrar deneyin.", ex);
+        }
     }
     
     // Görevi günceller
     public void Update(ToDoItem todoItem)
     {
-        // Görev nesnesinin null olup olmadığını kontrol eder.
         if (todoItem == null)
         {
             throw new ArgumentNullException(nameof(todoItem), "Görev null olamaz.");
         }
-        _toDoItemRepository.Update(todoItem);
+        
+        try
+        {
+            _toDoItemRepository.Update(todoItem);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("Görev eklenirken bir hata oluştu. Lütfen tekrar deneyin.", ex);
+        }
     }
     
     // Görevi siler
     public void Delete(ToDoItem todoItem)
     {
-        // Görev nesnesinin null olup olmadığını kontrol eder.
         if (todoItem == null)
         {
             throw new ArgumentNullException(nameof(todoItem), "Görev null olamaz.");
         }
-        _toDoItemRepository.Delete(todoItem);
+        
+        try
+        {
+            _toDoItemRepository.Delete(todoItem);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("Görev eklenirken bir hata oluştu. Lütfen tekrar deneyin.", ex);
+        }
     }
     
     // Tüm görevleri getirir
-    public IEnumerable<ToDoItem> GetAll()
+    public IEnumerable<ToDoItem> GetFilteredItems(bool? isCompleted = null)
     {
-        return _toDoItemRepository.GetAll();
+        return _toDoItemRepository.GetFilteredItems(isCompleted) 
+               ?? throw new InvalidOperationException("Görevler bulunamadı.");
     }
 }
