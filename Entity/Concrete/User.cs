@@ -5,33 +5,30 @@ namespace Entity.Concrete;
 // User sınıfı, IUser arayüzünü uygulayarak kullanıcı nesnelerini temsil eder.
 public class User : EntityBase
 {
-    public string Username { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-    public string Role { get; set; } = string.Empty;
+    public string Username { get; set; }
+    public string Password { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    
-    public ICollection<ToDoItem> ToDoItems { get; set; } = new List<ToDoItem>();
+    // Navigation property - ToDoItems ile ilişkisi
+    public ICollection<ToDoItem> ToDoItems { get; set; }
 
+    // Default constructor
     public User()
     {
         ToDoItems = new List<ToDoItem>();
+        CreatedAt = DateTime.UtcNow;
+        IsDeleted = false;
     }
     
-    // Constructor : Kullanıcı oluşturulurken gerekli bilgileri alır ve atanır.
+    // Parametreli constructor
     public User(string username, string password, string firstName, string lastName)
     {
-        FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
-        LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));
-        Username = username ?? throw new ArgumentNullException(nameof(username));
-        Password = password ?? throw new ArgumentNullException(nameof(password));
-        Role = "User";
+        Username = username;
+        Password = password;
+        FirstName = firstName;
+        LastName = lastName;
+        ToDoItems = new List<ToDoItem>();
         CreatedAt = DateTime.UtcNow;
-    }
-
-    public User(string username, string password, string role)
-    {
-        Username = username ?? throw new ArgumentNullException(nameof(username));
-        Password = password ?? throw new ArgumentNullException(nameof(password));
+        IsDeleted = false;
     }
 }
