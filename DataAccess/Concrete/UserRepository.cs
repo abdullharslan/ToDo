@@ -39,14 +39,6 @@ public class UserRepository : IUserRepository
     {
         await _appDbContext.Users.AddAsync(user);
     }
-
-    // Belirtilen ID'ye sahip kullanıcıyı getirir.
-    public async Task<User?> GetByUsername(int id)
-    {
-        return await _appDbContext.Users
-            .Include(u => u.ToDoItems)
-            .FirstOrDefaultAsync(u => u.Id == id);
-    }
     
     // Kullanıcıyı günceller
     public void Update(User user)
