@@ -47,12 +47,6 @@ public class UserRepository : IUserRepository
             .Include(u => u.ToDoItems)
             .FirstOrDefaultAsync(u => u.Id == id);
     }
-
-    // Kullanıcı ekler
-    public async Task AddAsync(User user)
-    {
-        await _appDbContext.Users.AddAsync(user);
-    }
     
     // Kullanıcıyı günceller
     public void Update(User user)
