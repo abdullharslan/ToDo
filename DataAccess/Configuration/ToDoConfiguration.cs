@@ -2,7 +2,7 @@ using Entity.Concrete;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DataAccess.Configrution;
+namespace DataAccess.Configuration;
 
 public class ToDoConfiguration : IEntityTypeConfiguration<ToDoItem>
 {
@@ -24,9 +24,23 @@ public class ToDoConfiguration : IEntityTypeConfiguration<ToDoItem>
             .IsRequired()
             .HasDefaultValue(false);
         
-        builder.HasOne<User>()
+        builder.Property(t => t.CreatedAt)
+            .IsRequired()
+            .HasDefaultValue(DateTime.UtcNow);
+        
+        builder.Property(t => t.UpdatedAt)
+            .IsRequired()
+            .HasDefaultValue(DateTime.UtcNow);
+        
+        builder.Property(t => t.IsDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
+        
+        builder.HasOne(t => t.User)
             .WithMany(u => u.ToDoItems) 
             .HasForeignKey(t => t.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.HasQueryFilter(t => !t.IsDeleted);
     }
 }

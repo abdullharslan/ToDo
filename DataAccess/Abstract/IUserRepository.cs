@@ -8,9 +8,10 @@ namespace DataAccess.Abstract;
  */
 public interface IUserRepository
 {
-    User? GetById(int id);
-    User? GetByUsername(string userName);
-    void Add(User user);
+    Task<User?> GetById(int id);
+    Task<User?> GetByUsername(string userName);
+    Task AddAsync(User user);
     void Update(User user);
     void Delete(User user);
+    Task<bool> SaveChangesAsync();
 }

@@ -1,5 +1,6 @@
 using DataAccess.Abstract;
 using Entity.Concrete;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Concrete;
 
@@ -24,39 +25,50 @@ public class ToDoItemRepository : IToDoItemRepository
     }
 
     // Belirtilen ID'ye sahip görevi veritabanından bulur ve döndürür.
-    public ToDoItem? GetById(int id)
+    public async Task<ToDoItem?> GetById(int id, int userId)
     {
-        return _appDbContext.ToDoItems.Find(id);
+        return await _appDbContext.ToDoItems
+            .Include(t => t.User)
+            .FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
     }
     
     // Belirtilen filtreye göre görevleri döndürür. Eğer filtre belirtilmemişse (null) tüm görevleri listeler.
-    public IEnumerable<ToDoItem> GetFilteredItems(bool? isCompleted = null)
+    public async Task<IEnumerable<ToDoItem>> GetFilteredItems(int userId, bool? isCompleted = null)
     {
-        return isCompleted == null
-            ? _appDbContext.ToDoItems.ToList()
-            : _appDbContext.ToDoItems
-                .Where(item => item.IsCompleted == isCompleted)
-                .ToList();
+        var query = _appDbContext.ToDoItems
+            .Include(t => t.User)
+            .Where(t => t.UserId == userId);
+
+        if (isCompleted.HasValue)
+        {
+            query = query.Where(t => t.IsCompleted == isCompleted.Value);
+        }
+        
+        return await query.ToListAsync();
     }
     
     // Yeni bir görevi veritabanına ekler.
-    public void Add(ToDoItem todoItem)
+    public async Task AddAsync(ToDoItem todoItem)
     {
-        _appDbContext.ToDoItems.Add(todoItem);
-        _appDbContext.SaveChanges();
+        await _appDbContext.ToDoItems.AddAsync(todoItem);
     }
 
     // Var olan bir görevi günceller.
     public void Update(ToDoItem todoItem)
     {
         _appDbContext.ToDoItems.Update(todoItem);
-        _appDbContext.SaveChanges();
     }
 
     // Verilen görevi siler.
-    public void Delete(ToDoItem? todoItem)
+    public void Delete(ToDoItem todoItem)
     {
+        // Fiziksel silme yerine soft delete
+        todoItem.IsDeleted = true;
         _appDbContext.ToDoItems.Remove(todoItem);
-        _appDbContext.SaveChanges();
+    }
+
+    public async Task<bool> SaveChangesAsync()
+    {
+        return await _appDbContext.SaveChangesAsync() > 0;
     }
 }

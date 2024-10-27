@@ -2,7 +2,7 @@ using Entity.Concrete;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DataAccess.Configrution;
+namespace DataAccess.Configuration;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
@@ -20,12 +20,28 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(70);;
         
-        builder.Property(u => u.Role)
+        builder.Property(u => u.FirstName)
             .IsRequired()
-            .HasMaxLength(10);;
+            .HasMaxLength(50);
+        
+        builder.Property(u => u.LastName)
+            .IsRequired()
+            .HasMaxLength(50);
 
         builder.Property(u => u.CreatedAt)
             .IsRequired()
             .HasDefaultValue(DateTime.UtcNow);
+        
+        builder.Property(u => u.UpdatedAt)
+            .IsRequired()
+            .HasDefaultValue(DateTime.UtcNow);
+        
+        builder.Property(u => u.IsDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
+        
+        builder.HasQueryFilter(u => !u.IsDeleted);
+        
+        // ToDoItems ilişkisi entity'de tanımlandığı için burada tekrar tanımlamaya gerek yok
     }
 }

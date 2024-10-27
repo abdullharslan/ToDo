@@ -8,9 +8,10 @@ namespace DataAccess.Abstract;
  */
 public interface IToDoItemRepository
 {
-    ToDoItem? GetById(int id);
-    IEnumerable<ToDoItem> GetFilteredItems(bool? isCompleted = null); 
-    void Add(ToDoItem todoItem);
+    Task<ToDoItem?> GetById(int id, int userId);
+    Task<IEnumerable<ToDoItem>> GetFilteredItems(int userId, bool? isCompleted = null); 
+    Task AddAsync(ToDoItem todoItem);
     void Update(ToDoItem todoItem);
     void Delete(ToDoItem todoItem);
+    Task<bool> SaveChangesAsync();
 }

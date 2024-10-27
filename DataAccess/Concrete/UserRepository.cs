@@ -1,5 +1,6 @@
 using DataAccess.Abstract;
 using Entity.Concrete;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Concrete;
 
@@ -17,36 +18,57 @@ public class UserRepository : IUserRepository
         _appDbContext = appDbContext;
     }
 
-    // Verilen ID ile kullanıcıyı veritabanından bulur. Kullanıcı bulunamazsa, bir InvalidOperationException fırlatır.
-    public User? GetById(int id)
+    // Belirtilen ID'ye sahip kullanıcıyı getirir.
+    public async Task<User?> GetById(int id)
     {
-        return _appDbContext.Users.Find(id);
+        return await _appDbContext.Users
+            .Include(u => u.ToDoItems)
+            .FirstOrDefaultAsync(u => u.Id == id);
     }
 
-    // Kullanıcıyı arar ve getirir, eğer kullanıcıyı bulamazsa hata mesajı yollar.
-    public User? GetByUsername(string userName)
+    // Kullanıcı adına göre kullanıcıyı getirir
+    public async Task<User?> GetByUsername(string username)
     {
-        return _appDbContext.Users.SingleOrDefault(u => userName == u.Username);
+        return await _appDbContext.Users
+            .Include(u => u.ToDoItems)
+            .FirstOrDefaultAsync(u => u.Username == username);
+    }
+
+    // Yeni kullanıcı ekler
+    public async Task AddAsync(User user)
+    {
+        await _appDbContext.Users.AddAsync(user);
+    }
+
+    // Belirtilen ID'ye sahip kullanıcıyı getirir.
+    public async Task<User?> GetByUsername(int id)
+    {
+        return await _appDbContext.Users
+            .Include(u => u.ToDoItems)
+            .FirstOrDefaultAsync(u => u.Id == id);
     }
 
     // Kullanıcı ekler
-    public void Add(User user)
+    public async Task AddAsync(User user)
     {
-        _appDbContext.Users.Add(user);
-        _appDbContext.SaveChanges();
+        await _appDbContext.Users.AddAsync(user);
     }
     
     // Kullanıcıyı günceller
     public void Update(User user)
     {
         _appDbContext.Users.Update(user);
-        _appDbContext.SaveChanges();
     }
     
     // Kullanıcıyı siler
-    public void Delete(User? user)
+    public void Delete(User user)
     {
+        user.IsDeleted = true;
         _appDbContext.Users.Remove(user);
-        _appDbContext.SaveChanges();
+    }
+
+    public async Task<bool> SaveChangesAsync()
+    {
+        return await _appDbContext.SaveChangesAsync() > 0;
     }
 }
