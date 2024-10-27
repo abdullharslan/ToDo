@@ -12,7 +12,7 @@ namespace Business.Abstract;
 public interface IAuthService
 {
     string GenerateToken(User user);
-    void RegisterUser(RegisterDTO registerDto);
-    User Login(LoginDTO loginDto);
-    bool UserExists(string username);
+    Task<LoginResponseDTO> RegisterUserAsync(RegisterDTO registerDto);
+    Task<LoginResponseDTO> LoginAsync(LoginDTO loginDto);
+    Task<bool> UserExistsAsync(string username);
 }

@@ -23,49 +23,78 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    // Kullanıcı kimliğini getirir
-    public User? GetUser(int userId)
+    /*
+     * GetUserAsync metodu, belirtilen kimliğe sahip kullanıcıyı veritabanından asenkron olarak getirir. UserId
+     * parametresinin 0'dan büyük olması gerekir, aksi halde ArgumentException fırlatır. Kullanıcı bulunamazsa null
+     * döner.
+     */
+    public async Task<User?> GetUserAsync(int userId)
     {
         if (userId <= 0)
         {
             throw new ArgumentException("Geçersiz kullanıcı kimliği.");
         }
-        return _userRepository.GetById(userId);
+        return await _userRepository.GetById(userId);
     }
 
-    // Kullanıcı ekler
-    public void Add(User user)
+    /*
+     * GetUserByUsernameAsync metodu, belirtilen kullanıcı adına sahip kullanıcıyı veritabanından asenkron olarak
+     * getirir. Username parametresi boş olamaz, aksi halde ArgumentException fırlatır. Kullanıcı bulunamazsa null döner.
+     */
+    public async Task<User?> GetUserByUsernameAsync(string username)
     {
-        // Kullanıcı nesnesinin null olup olmadığını kontrol eder.
+        if (string.IsNullOrEmpty(username))
+        {
+            throw new ArgumentException("Kullanıcı adı boş bırakılamaz.");
+        }
+        return await _userRepository.GetByUsername(username);
+    }
+    
+    /*
+     * AddAsync metodu, yeni bir kullanıcıyı veritabanına asenkron olarak ekler. User parametresi null olamaz, aksi
+     * halde ArgumentNullException fırlatır. Aynı kullanıcı adına sahip başka bir kullanıcı varsa
+     * InvalidOperationException fırlatır. İşlem başarılı ise true döner, hata durumunda InvalidOperationException
+     * fırlatır.
+     */
+    public async Task<bool> AddAsync(User user)
+    {
         if (user == null)
         {
             throw new ArgumentNullException(nameof(user), "Kullanıcı null olamaz.");
         }
-        if (_userRepository.GetByUsername(user.Username) != null)
+        
+        var existingUser = await _userRepository.GetByUsername(user.Username);
+        if (existingUser != null)
         {
             throw new InvalidOperationException("Bu kullanıcı adı zaten mevcut.");
         }
 
         try
         {
-            _userRepository.Add(user);
+            await _userRepository.AddAsync(user);
+            return true;
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException($"Kullanıcı '{user.Username}' eklenirken bir hata oluştu. Lütfen tekrar deneyin.", ex);
+            throw new InvalidOperationException(
+                $"Kullanıcı '{user.Username}' eklenirken bir hata oluştu. Lütfen tekrar deneyin.", ex);
         }
-        
     }
     
-    // Kullanıcıyı günceller
-    public void Update(User user)
+    /*
+     * UpdateAsync metodu, var olan bir kullanıcının bilgilerini veritabanında asenkron olarak günceller.
+     * User parametresi null olamaz, aksi halde ArgumentNullException fırlatır. Güncellenecek kullanıcı adı başka bir
+     * kullanıcı tarafından kullanılıyorsa InvalidOperationException fırlatır. İşlem başarılı ise true döner, hata
+     * durumunda InvalidOperationException fırlatır.
+     */
+    public async Task<bool> UpdateAsync(User user)
     {
-        // Kullanıcı nesnesinin null olup olmadığını kontrol eder.
         if (user == null)
         {
             throw new ArgumentNullException(nameof(user), "Kullanıcı null olamaz.");
         }
-        var existingUser = _userRepository.GetByUsername(user.Username);
+        
+        var existingUser = await _userRepository.GetByUsername(user.Username);
         if (existingUser != null && existingUser.Id != user.Id)
         {
             throw new InvalidOperationException("Bu kullanıcı adı zaten mevcut.");
@@ -74,17 +103,22 @@ public class UserService : IUserService
         try
         {
             _userRepository.Update(user);
+            return true;
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException($"Kullanıcı '{user.Username}' eklenirken bir hata oluştu. Lütfen tekrar deneyin.", ex);
+            throw new InvalidOperationException(
+                $"Kullanıcı '{user.Username}' eklenirken bir hata oluştu. Lütfen tekrar deneyin.", ex);
         }
     }
 
-    // Kullanıcıyı siler
-    public void Delete(User user)
+    /*
+     * DeleteAsync metodu, belirtilen kullanıcıyı veritabanından asenkron olarak siler (soft delete). User parametresi
+     * null olamaz, aksi halde ArgumentNullException fırlatır. İşlem başarılı ise true döner, hata durumunda
+     * InvalidOperationException fırlatır.
+     */
+    public async Task<bool> DeleteAsync(User user)
     {
-        // Kullanıcı nesnesinin null olup olmadığını kontrol eder.
         if (user == null)
         {
             throw new ArgumentNullException(nameof(user), "Kullanıcı null olamaz.");
@@ -93,10 +127,23 @@ public class UserService : IUserService
         try
         {
             _userRepository.Delete(user);
+            return true;
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException($"Kullanıcı '{user.Username}' eklenirken bir hata oluştu. Lütfen tekrar deneyin.", ex);
+            throw new InvalidOperationException(
+                $"Kullanıcı '{user.Username}' eklenirken bir hata oluştu. Lütfen tekrar deneyin.", ex);
         }
+    }
+
+    /*
+     * SaveChangesAsync metodu, yapılan değişiklikleri (ekleme, güncelleme, silme) veritabanına kaydetmek için
+     * kullanılır. Bu metod, UnitOfWork pattern'i kullanarak tüm değişikliklerin tek bir transaction'da kaydedilmesini
+     * sağlar. İşlem başarılı ise true, başarısız ise false döner.
+     * Asenkron olarak çalışır ve repository katmanındaki SaveChangesAsync metodunu çağırır.
+     */
+    public async Task<bool> SaveChangesAsync()
+    {
+        return await _userRepository.SaveChangesAsync();
     }
 }

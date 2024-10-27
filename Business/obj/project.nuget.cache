@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "X5CMO8avgvE=",
+  "dgSpecHash": "46mOYwUVk8w=",
   "success": true,
   "projectFilePath": "/Users/abdullah/Desktop/ToDo/Business/Business.csproj",
   "expectedPackageFiles": [
+    "/Users/abdullah/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
     "/Users/abdullah/.nuget/packages/microsoft.bcl.timeprovider/8.0.1/microsoft.bcl.timeprovider.8.0.1.nupkg.sha512",
     "/Users/abdullah/.nuget/packages/microsoft.entityframeworkcore/8.0.10/microsoft.entityframeworkcore.8.0.10.nupkg.sha512",
     "/Users/abdullah/.nuget/packages/microsoft.entityframeworkcore.abstractions/8.0.10/microsoft.entityframeworkcore.abstractions.8.0.10.nupkg.sha512",
@@ -30,7 +31,9 @@
     "/Users/abdullah/.nuget/packages/microsoft.identitymodel.tokens/8.1.2/microsoft.identitymodel.tokens.8.1.2.nupkg.sha512",
     "/Users/abdullah/.nuget/packages/npgsql/8.0.5/npgsql.8.0.5.nupkg.sha512",
     "/Users/abdullah/.nuget/packages/npgsql.entityframeworkcore.postgresql/8.0.10/npgsql.entityframeworkcore.postgresql.8.0.10.nupkg.sha512",
-    "/Users/abdullah/.nuget/packages/system.identitymodel.tokens.jwt/8.1.2/system.identitymodel.tokens.jwt.8.1.2.nupkg.sha512"
+    "/Users/abdullah/.nuget/packages/system.identitymodel.tokens.jwt/8.1.2/system.identitymodel.tokens.jwt.8.1.2.nupkg.sha512",
+    "/Users/abdullah/.nuget/packages/microsoft.netcore.app.ref/8.0.8/microsoft.netcore.app.ref.8.0.8.nupkg.sha512",
+    "/Users/abdullah/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.8/microsoft.aspnetcore.app.ref.8.0.8.nupkg.sha512"
   ],
   "logs": []
 }

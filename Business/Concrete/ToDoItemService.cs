@@ -23,74 +23,123 @@ public class ToDoItemService : IToDoItemService
         _toDoItemRepository = toDoItemRepository;
     }
 
-    // Belirtilen kimliğe sahip görevi getirir.
-    public ToDoItem? GetTodoItem(int todoItemId)
+    /*
+     * Belirtilen ID ve kullanıcı ID'sine sahip görevi getirir. Sadece görevin sahibi olan kullanıcı görevi
+     * görüntüleyebilir. ToDoItem bulunamazsa null döner.
+     */
+    public async Task<ToDoItem?> GetTodoItemAsync(int todoItemId, int userId)
     {
         if (todoItemId <= 0)
         {
-            throw new ArgumentException("Geçersiz görev kimliği. Lütfen geçerli bir kimlik giriniz.");
+            throw new ArgumentException("Geçersiz görev kimliği.");
         }
-        return _toDoItemRepository.GetById(todoItemId); 
+        return await _toDoItemRepository.GetById(todoItemId, userId);
     }
 
-    // Yeni görev ekler
-    public void Add(ToDoItem todoItem)
+    /*
+     * Belirtilen kullanıcıya ait görevleri filtreli şekilde getirir. isCompleted parametresi ile
+     * tamamlanmış/tamamlanmamış görevler filtrelenebilir. isCompleted null ise tüm görevleri getirir.
+     */
+    public async Task<IEnumerable<ToDoItem>?> GetFilteredItemsAsync(int userId, bool? isCompleted = null)
+    {
+        if (userId <= 0)
+        {
+            throw new ArgumentException("Geçersiz görev kimliği");
+        }
+
+        return await _toDoItemRepository.GetFilteredItems(userId, isCompleted);
+    }
+    
+    /*
+     * Yeni bir görev ekler. Görev null olamaz ve geçerli bir kullanıcıya ait olmalıdır. İşlem başarılı olursa true döner.
+     */
+    public async Task<bool> AddAsync(ToDoItem todoItem)
     {
         if (todoItem == null)
         {
             throw new ArgumentNullException(nameof(todoItem), "Görev null olamaz.");
         }
 
+        if (todoItem.UserId <= 0)
+        {
+            throw new ArgumentException("Görev geçerli bir kullanıcıya ait olmalıdır.");
+        }
         try
         {
-            _toDoItemRepository.Add(todoItem);
+            await _toDoItemRepository.AddAsync(todoItem);
+            return true;
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException("Görev eklenirken bir hata oluştu. Lütfen tekrar deneyin.", ex);
+            throw new InvalidOperationException("Görev eklenirken bir hata oluştu.", ex);
         }
     }
     
-    // Görevi günceller
-    public void Update(ToDoItem todoItem)
+    /*
+     * Var olan bir görevi günceller. Görev null olamaz ve sadece görevin sahibi güncelleyebilir. İşlem başarılı olursa
+     true döner.
+     */
+    public async Task<bool> UpdateAsync(ToDoItem todoItem)
     {
         if (todoItem == null)
         {
             throw new ArgumentNullException(nameof(todoItem), "Görev null olamaz.");
+        }
+
+        var existingTodo = await _toDoItemRepository.GetById(todoItem.Id, todoItem.UserId);
+        if (existingTodo == null)
+        {
+            throw new InvalidOperationException(
+                "Güncellenecek görev bulunamadı veya bu görevi güncelleme yetkiniz yok.");
         }
         
         try
         {
             _toDoItemRepository.Update(todoItem);
+            return true;
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException("Görev eklenirken bir hata oluştu. Lütfen tekrar deneyin.", ex);
+            throw new InvalidOperationException("Görev eklenirken bir hata oluştu.", ex);
         }
     }
     
-    // Görevi siler
-    public void Delete(ToDoItem todoItem)
+    /*
+     * Bir görevi siler (soft delete). Görev null olamaz ve sadece görevin sahibi silebilir. İşlem başarılı olursa true
+     * döner.
+     */
+    public async Task<bool> DeleteAsync(ToDoItem todoItem)
     {
         if (todoItem == null)
         {
             throw new ArgumentNullException(nameof(todoItem), "Görev null olamaz.");
         }
+
+        var existingTodo = await _toDoItemRepository.GetById(todoItem.Id, todoItem.UserId);
+        if (existingTodo == null)
+        {
+            throw new InvalidOperationException("Silinecek görev bulunamadı veya bu görevi silme yetkiniz yok.");
+        }
         
         try
         {
             _toDoItemRepository.Delete(todoItem);
+            return true;
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException("Görev eklenirken bir hata oluştu. Lütfen tekrar deneyin.", ex);
+            throw new InvalidOperationException("Görev eklenirken bir hata oluştu.", ex);
         }
     }
     
-    // Tüm görevleri getirir
-    public IEnumerable<ToDoItem> GetFilteredItems(bool? isCompleted = null)
+    /*
+     * SaveChangesAsync metodu, yapılan değişiklikleri (ekleme, güncelleme, silme) veritabanına kaydetmek için
+     * kullanılır. Bu metod, UnitOfWork pattern'i kullanarak tüm değişikliklerin tek bir transaction'da kaydedilmesini
+     * sağlar. İşlem başarılı ise true, başarısız ise false döner.
+     * Asenkron olarak çalışır ve repository katmanındaki SaveChangesAsync metodunu çağırır.
+     */
+    public async Task<bool> SaveChangesAsync()
     {
-        return _toDoItemRepository.GetFilteredItems(isCompleted) 
-               ?? throw new InvalidOperationException("Görevler bulunamadı.");
+        return await _toDoItemRepository.SaveChangesAsync();
     }
 }
