@@ -1,79 +1,92 @@
-@Controllers_HostAddress = http://localhost:5064
+@baseUrl = http://localhost:5064/api
+@token = eyJhbG...  // Login'den sonra buraya token'ı yapıştırın
 
-### Kullanıcı Ekleme
-POST {{Controllers_HostAddress}}/api/user
+### Auth İşlemleri ###
+
+### Register - Yeni Kullanıcı Kaydı
+POST {{baseUrl}}/auth/register
 Content-Type: application/json
-Accept: application/json
 
 {
-  "id": 1,
+  "firstName": "Test",
+  "lastName": "User",
   "username": "testuser",
-  "password": "testpassword",
-  "role": "User"
+  "password": "Test123!"
 }
 
-###
-
-### Kullanıcı Bilgilerini Alma
-GET {{Controllers_HostAddress}}/api/user/1
-Accept: application/json
-
-###
-
-### Kullanıcı Güncelleme
-PUT {{Controllers_HostAddress}}/api/user/1
+### Login - Kullanıcı Girişi
+POST {{baseUrl}}/auth/login
 Content-Type: application/json
-Accept: application/json
+
+{
+  "username": "testuser",
+  "password": "Test123!"
+}
+
+### UserExists - Kullanıcı Adı Kontrolü
+GET {{baseUrl}}/auth/exists/testuser
+
+### User (Profil) İşlemleri ###
+
+### Get User - Kullanıcı Bilgilerini Getir
+GET {{baseUrl}}/user/1
+Authorization: Bearer {{token}}
+
+### Update User - Kullanıcı Bilgilerini Güncelle
+PUT {{baseUrl}}/user/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
 
 {
   "id": 1,
-  "username": "updateduser",
-  "password": "newpassword",
-  "role": "User"
+  "firstName": "Updated",
+  "lastName": "User",
+  "username": "testuser",
+  "password": "Test123!"
 }
 
-###
+### Delete User - Kullanıcı Sil (Soft Delete)
+DELETE {{baseUrl}}/user/1
+Authorization: Bearer {{token}}
 
-### Kullanıcı Silme
-DELETE {{Controllers_HostAddress}}/api/user/1
-Accept: application/json
+### ToDo İşlemleri ###
 
-###
+### Get All Todos - Tüm Görevleri Getir
+GET {{baseUrl}}/todoitem
+Authorization: Bearer {{token}}
 
-### Görev Ekleme
-POST {{Controllers_HostAddress}}/api/todoitem
+### Get Todo - Belirli Bir Görevi Getir
+GET {{baseUrl}}/todoitem/1
+Authorization: Bearer {{token}}
+
+### Get Filtered Todos - Filtrelenmiş Görevleri Getir
+GET {{baseUrl}}/todoitem?isCompleted=true
+Authorization: Bearer {{token}}
+
+### Create Todo - Yeni Görev Oluştur
+POST {{baseUrl}}/todoitem
+Authorization: Bearer {{token}}
 Content-Type: application/json
-Accept: application/json
 
 {
-  "id": 1,
-  "title": "Yeni Görev",
+  "title": "Test Görevi",
+  "description": "Bu bir test görevidir",
   "isCompleted": false
 }
 
-###
-
-### Görev Bilgilerini Alma
-GET {{Controllers_HostAddress}}/api/todoitem/1
-Accept: application/json
-
-###
-
-### Görev Güncelleme
-PUT {{Controllers_HostAddress}}/api/todoitem/1
+### Update Todo - Görev Güncelle
+PUT {{baseUrl}}/todoitem/1
+Authorization: Bearer {{token}}
 Content-Type: application/json
-Accept: application/json
 
 {
   "id": 1,
   "title": "Güncellenmiş Görev",
-  "isCompleted": true
+  "description": "Bu görev güncellendi",
+  "isCompleted": true,
+  "userId": 1
 }
 
-###
-
-### Görev Silme
-DELETE {{Controllers_HostAddress}}/api/todoitem/1
-Accept: application/json
-
-###
+### Delete Todo - Görev Sil (Soft Delete)
+DELETE {{baseUrl}}/todoitem/1
+Authorization: Bearer {{token}}

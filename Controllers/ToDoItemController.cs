@@ -1,26 +1,30 @@
 using Business.Abstract;
 using Entity.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-/*
- * TodoItemController, görev yönetimi ile ilgili işlemleri yöneten bir API denetleyicisidir. Bu sınıf, görev ekleme,
- * güncelleme, silme ve görev bilgilerini alma işlemlerini gerçekleştirir. İş mantığı, ITodoItemService arayüzü
- * üzerinden sağlanır.
- */
 namespace Controllers;
 
+/*
+ * ToDoItemController, kullanıcıların görev yönetimi için HTTP endpoint'leri sağlar.
+ * Bu controller:
+ * - Görev ekleme, güncelleme, silme işlemleri
+ * - Görev detayı görüntüleme
+ * - Tamamlanma durumuna göre görev filtreleme
+ * işlemlerini yönetir ve kullanıcı bazlı yetkilendirme sistemi kullanır.
+ */
 [ApiController]
+// Sadece giriş yapmış kullanıcılar erişebilir.
+[Authorize]
 [Route("api/[controller]")]
+
+// Controller yerine ControllerBase kullanıyoruz çünkü view dönmeyeceğiz
 public class ToDoItemController : Controller
 {
     /*
-     * ITodoItemService arayüzünü uygulayan bir nesne, Dependency Injection yöntemiyle TodoItemController'a aktarılır.
-     * Bu sayede, görev yönetimi ile ilgili işlemler (görev ekleme, güncelleme, silme vb.) _todoItemService üzerinden
-     * gerçekleştirilir. 'readonly' anahtar kelimesi, _todoItemService değişkeninin yalnızca yapıcı metod içinde
-     * atanabileceğini ve sonrasında değiştirilemeyeceğini belirtir. Bu, kodun güvenilirliğini artırır ve görev
-     * işlemleri için gereken hizmetin tutarlı bir şekilde kullanılmasını sağlar.
+     * _todoItemService: Görev işlemleri için kullanılan servis
+     * Constructor Dependency Injection ile IToDoItemService enjekte edilir
      */
-    // Dependecy Constructor Injection
     private readonly IToDoItemService _toDoItemService;
 
     public ToDoItemController(IToDoItemService toDoItemService)
@@ -28,87 +32,158 @@ public class ToDoItemController : Controller
         _toDoItemService = toDoItemService;
     }
 
+    /*
+     * Belirtilen ID'ye sahip görevi getirir.
+     * [HttpGet] - GET metodu ile çağrılır
+     * {id} - URL'den görev ID'si alınır
+     *
+     * Dönüş Değerleri:
+     * 200 OK - Görev başarıyla bulunduğunda
+     * 404 Not Found - Görev bulunamadığında
+     * 401 Unauthorized - Kullanıcı yetkisiz olduğunda
+     */
     [HttpGet("{id:int}")]
-    public IActionResult GetTodoItem(int id)
+    public async Task<IActionResult> GetTodoItem(int id)
     {
-        /*
-         * Belirtilen kimliğe sahip görevi almak için hizmetten istek yapar. Eğer görev bulunamazsa,
-         * InvalidOperationException fırlatılarak kullanıcıya görev bulunamadığına dair bir hata mesajı iletilir.
-         * Başarılı bir durumda, görev bilgileri 200 OK durumu ile döndürülür.
-         */
-        var todoItem = _toDoItemService.GetTodoItem(id);
-        if (todoItem == null) return NotFound("Görev bulunamadı.");
-        return Ok(todoItem);
-    }
-
-    [HttpPost]
-    public IActionResult Add([FromBody] ToDoItem todoItem)
-    {
-        if (todoItem == null) return BadRequest("Görev verileri eksik.");
-        
         try
         {
-            _toDoItemService.Add(todoItem);
-            /*
-             * Görev başarıyla eklendiğinde, 201 Created durumu döndürür ve oluşturulan görevin detaylarını döndürmek
-             * için GetTodoItem metodunu kullanır.
-             */
-            return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem);
+            var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            var todoItem = await _toDoItemService.GetTodoItemAsync(id, userId);
+            if (todoItem == null)
+            {
+                return NotFound(new { message = "Görev bulunamdı." });
+            }
+
+            return Ok(todoItem);
         }
         catch (Exception ex)
         {
-            // Genel bir hata durumu meydana gelirse, 500 Internal Server Error döndürü ve hata mesajını içerir.
-            return StatusCode(500, "Sunucu hatası: " + ex);
+            return StatusCode(500, new { message = $"Sunucu hatası: {ex.Message}" });
         }
     }
 
-    [HttpPut("{id:int}")]
-    public IActionResult Update(int id, [FromBody] ToDoItem todoItem)
+    /*
+     * Kullanıcının görevlerini tamamlanma durumuna göre filtreli getirir.
+     * [HttpGet] - GET metodu ile çağrılır
+     * [FromQuery] isCompleted - Query string'den filtreleme parametresi alınır
+     */
+    [HttpGet]
+    public async Task<IActionResult> GetFilteredItems([FromBody] bool? isCompleted = null)
     {
-        if (todoItem == null) return BadRequest("Görev verileri eksik.");
+        try
+        {
+            var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            var items = await _toDoItemService.GetFilteredItemsAsync(userId, isCompleted);
+            return Ok(items);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = $"Sunucu hatası: {ex.Message}" });
+        }
+    }
+    
+    /*
+     * Yeni görev ekler.
+     * [HttpPost] - POST metodu ile çağrılır
+     * [FromBody] - ToDoItem verisi request body'den alınır
+     */
+    [HttpPost]
+    public async Task<IActionResult> Add([FromBody] ToDoItem todoItem)
+    {
+        if (todoItem == null)
+        {
+            return BadRequest(new { message = "Görev verileri eksik." });
+        }
         
-        // Gelen id ile todoItem'ın kimliğini karşılaştır; eşleşmiyorsa BadRequest döndür.
+        try
+        {
+            var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            todoItem.UserId = userId;
+
+            await _toDoItemService.AddAsync(todoItem);
+            if (await _toDoItemService.SaveChangesAsync())
+            {
+                return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem);
+            }
+            
+            return BadRequest(new { message = "Görev kaydedilemedi." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = $"Sunucu hatası: {ex.Message}" });
+        }
+    }
+
+    /*
+     * Mevcut görevi günceller.
+     * [HttpPut] - PUT metodu ile çağrılır
+     * {id} - URL'den görev ID'si alınır
+     * [FromBody] - Güncellenmiş ToDoItem verisi request body'den alınır
+     */
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] ToDoItem todoItem)
+    {
+        if (todoItem == null)
+        {
+            return BadRequest(new { message = "Görev verileri eksik." });
+        }
         if (id != todoItem.Id)
         {
-            return BadRequest("Görev kimliği eşleşmiyor.");
+            return BadRequest(new { message = "Görev kimliği eşleşmiyor." });
         }
 
         try
         {
-            // TodoItem'ı güncelleme işlemini gerçekleştir.
-            _toDoItemService.Update(todoItem);
-            // Güncelleme başarılıysa 204 No Content döndür.
-            return NoContent();
+            var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            todoItem.UserId = userId;
+
+            await _toDoItemService.UpdateAsync(todoItem);
+            if (await _toDoItemService.SaveChangesAsync())
+            {
+                return NoContent();
+            }
+
+            return BadRequest(new { message = "Görev güncellenemedi" });
         }
         catch (InvalidOperationException ex)
         {
-            // Eğer bir InvalidOperationException hatası oluşursa, 404 Not Found döndür ve hata mesajını ekle.
-            return NotFound("Görev bulunamadı" + ex.Message);
+            return NotFound(new { message = ex.Message });
         }
-
         catch (Exception ex)
         {
-            // Genel hata durumları için 500 Internal Server Error döndür ve hata mesajını içerir.
-            return StatusCode(500, "Sunucu hatası: " + ex.Message);
+            return StatusCode(500, new { message = $"Sunucu hatası: {ex.Message}" });
         }
     }
 
+    /*
+     * Görevi siler.
+     * [HttpDelete] - DELETE metodu ile çağrılır
+     * {id} - URL'den görev ID'si alınır
+     */
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var todoItem = _toDoItemService.GetTodoItem(id);
-        if (todoItem == null) return NotFound("Görev bulunamadı.");
-        
         try
         {
-            _toDoItemService.Delete(todoItem);
-            // Silme işlemi başarılıysa 204 No Content döndür.
-            return NoContent();
+            var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            var todoItem = await _toDoItemService.GetTodoItemAsync(id, userId);
+
+            if (todoItem == null)
+            {
+                return NotFound(new { message = "Görev bulunamadı."});
+            }
+
+            await _toDoItemService.DeleteAsync(todoItem);
+            if (await _toDoItemService.SaveChangesAsync())
+            {
+                return NoContent();
+            }
+
+            return BadRequest(new { message = "Görev silinemedi." });
         }
         catch (Exception ex)
         {
-            // Genel hata durumları için 500 Internal Server Error döndür ve hata mesajını içerir.
-            return StatusCode(500, "Sunucu hatası: " + ex.Message);
+            return StatusCode(500, new { message = $"Sunucu hatası: {ex.Message}" });
         }
     }
 }

@@ -1,27 +1,29 @@
 using Business.Abstract;
 using Entity.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-/*
- * UserController, kullanıcı yönetimi ile ilgili işlemleri yöneten bir API denetleyicisidir. Bu sınıf, kullanıcı ekleme,
- * güncelleme, silme ve kullanıcı bilgilerini alma işlemlerini gerçekleştirir. İş mantığı, IUserService arayüzü
- * üzerinden sağlanır.
- */
 
 namespace Controllers;
 
+/*
+ * UserController, kullanıcı yönetimi için HTTP endpoint'leri sağlar.
+ * Bu controller:
+ * - Kullanıcı bilgisi görüntüleme
+ * - Kullanıcı ekleme (Register işlemi AuthController'da)
+ * - Kullanıcı bilgilerini güncelleme
+ * - Kullanıcı silme (soft delete)
+ * işlemlerini yönetir ve yetkilendirme sistemi kullanır.
+ */
 [ApiController]
+// Sadece giriş yapmış kullanıcılar erişebilir
+[Authorize]
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
     /*
-     * IUserService arayüzünü uygulayan bir nesne, Dependency Injection yöntemiyle UserController'a aktarılır. Bu
-     * sayede, iş mantığı ile ilgili işlemler (kullanıcı ekleme vb.) _userService üzerinden gerçekleştirilir. 'readonly'
-     * anahtar kelimesi, _userService değişkeninin yalnızca yapıcı metod içinde atanabileceğini ve sonrasında
-     * değiştirilemeyeceğini belirtir. Bu, kodun güvenilirliğini artırır ve kullanıcı işlemleri için gereken hizmetin
-     * tutarlı bir şekilde kullanılmasını sağlar.
+     * _userService: Kullanıcı işlemleri için kullanılan servis
+     * Constructor Dependency Injection ile IUserService enjekte edilir
      */
-    // Dependecy Constructor Injection
     private readonly IUserService _userService;
 
     public UserController(IUserService userService)
@@ -29,101 +31,117 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
+    /*
+     * Belirtilen ID'ye sahip kullanıcıyı getirir.
+     * [HttpGet] - GET metodu ile çağrılır
+     * {id} - URL'den kullanıcı ID'si alınır
+     *
+     * Dönüş Değerleri:
+     * 200 OK - Kullanıcı başarıyla bulunduğunda
+     * 404 Not Found - Kullanıcı bulunamadığında
+     * 401 Unauthorized - Yetkisiz erişim durumunda
+     */
     [HttpGet("{id:int}")]
-    public IActionResult GetUser(int id)
+    public async Task<IActionResult> GetUser(int id)
     {
-        /*
-         * Belirtilen kullanıcı kimliğine sahip kullanıcıyı alır. Kullanıcı bulunamazsa, InvalidOperationException
-         * fırlatılır.
-         */
-        var user = _userService.GetUser(id) ?? throw new InvalidOperationException("Kullanici Bulunamadı");
-        return Ok(user);
-    }
-
-    [HttpPost]
-    public IActionResult Add([FromBody] User user)
-    {
-        // Kullanıcı nesnesinin null olup olmadığını kontrol eder ve bir istisna fırlatır.
-        _ = user ?? throw new ArgumentNullException(nameof(user), "Kullanıcı verileri eksik");
-        
         try
         {
-            _userService.Add(user);
-            /*
-             * Kullanıcı başarıyla eklendiğinde, yeni kaynak için 201 Created döndür. CreatedAtAction metodu, eklenen
-             * kullanıcının detaylarını döndürmek için GetUser metodunu kullanarak, oluşturulan kullanıcının ID'sini içerir.
-             */
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
-        }
-        catch (InvalidOperationException ex)
-        {
-            /*
-             * Eğer bir InvalidOperationException hatası oluşursa, bu durumda 409 Conflict döndür ve "Kullanıcı
-             * bulunamadı veya mevcut" mesajını ekle.
-             */
-            return Conflict("Kullanici bulunamadı veya mevcut : " + ex.Message);
+            var currentUserId = 
+                int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            if (currentUserId != id)
+            {
+                return Unauthorized(new { message = "Başka kullanıcların bilgilerine erişemezsiniz." });
+            }
+
+            var user = await _userService.GetUserAsync(id);
+            if (user == null)
+            {
+                return NotFound(new { message = "Kullanıcı bulunamadı." });
+            }
+            
+            return Ok(user);
         }
         catch (Exception ex)
         {
-            // Genel hata durumları için
-            return StatusCode(500, ex.Message);
+            return StatusCode(500, new { message = $"Sunucu hatası: {ex.Message}" });
         }
     }
 
+    /*
+     * Mevcut kullanıcının bilgilerini günceller.
+     * [HttpPut] - PUT metodu ile çağrılır
+     * {id} - URL'den kullanıcı ID'si alınır
+     * [FromBody] - Güncellenmiş User verisi request body'den alınır
+     */
     [HttpPut("{id:int}")]
-    public IActionResult Update(int id, [FromBody] User user)
+    public async Task<IActionResult> Update(int id, [FromBody] User user)
     {
-        // Kullanıcı verilerini kontrol et, eğer user null ise, ArgumentNullException fırlat
-        _ = user ?? throw new ArgumentNullException(nameof(user), "Kullanıcı verileri eksik"); 
-        
-        /*
-         * Kullanıcı kimliğinin eşleşip eşleşmediğini kontrol et, eşleşmiyorsa, InvalidOperationException fırlat.
-         */
-        if (id != user.Id)
+        if (user == null)
         {
-            return BadRequest("Kullanıcı veriler eksik");
+            return BadRequest(new { message = "Kullanıcı verileri eksik." });
         }
 
         try
         {
-            // Kullanıcıyı güncelle
-            _userService.Update(user);
-            // Güncelleme başarılıysa 204 No Content gönder.
-            return NoContent();
+            var currentUserId = 
+                int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            if (currentUserId != id || currentUserId != user.Id)
+            {
+                return Unauthorized(new { message = "Başka kullanıcıların bilgilerini güncelleyemezsin." });
+            }
+
+            await _userService.UpdateAsync(user);
+            if (await _userService.SaveChangesAsync())
+            {
+                return NoContent();
+            }
+
+            return BadRequest(new { message = "Kullanıcı güncellenemedi." });
         }
         catch (InvalidOperationException ex)
         {
-            // Kullanıcı bulunamadı veya başka bir sorun var
-            return NotFound("Kullanici bulunamdı: " + ex.Message);
+            return NotFound(new { message = ex.Message });
         }
         catch (Exception ex)
         {
-            // Genel hata durumları için
-            return StatusCode(500, "Sunucu hatası" + ex.Message);
+            return StatusCode(500, new { message = $"Sunucu hatası: {ex.Message}" });
         }
     }
-
+    
+    /*
+     * Kullanıcıyı siler (soft delete).
+     * [HttpDelete] - DELETE metodu ile çağrılır
+     * {id} - URL'den kullanıcı ID'si alınır
+     */
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
-            // Kullanıcıyı al ve null ise istisna fırlat
-            var user = _userService.GetUser(id) ?? throw new InvalidOperationException("Kullanici bulunamdı.");
-            // Kullanıcıyı sil
-            _userService.Delete(user);
-            // 204 No Content döndür
-            return NoContent();
-
-        }
-        catch (InvalidOperationException ex)
-        {
-            // Kullanıcı bulunamadıysa 404 döndür
-            return NotFound("İşlem yapılamadı" + ex.Message);
+            var currentUserId = 
+                int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            if (currentUserId != id)
+            {
+                return Unauthorized(new { message = "Başka kullanıcıları silemezsin." });
+            }
+            
+            var user = await _userService.GetUserAsync(id);
+            if (user == null)
+            {
+                return NotFound("Kullanıcı bulunamadı.");
+            }
+            
+            await _userService.DeleteAsync(user);
+            if (await _userService.SaveChangesAsync())
+            {
+                return NoContent();
+            }
+            
+            return BadRequest(new { message = "Kullanıcı silinemedi." });
         }
         catch (Exception ex)
         {
-            return StatusCode(500, "Sunucu hatası: " + ex.Message);
+            return StatusCode(500, new { message = $"Sunucu hatası: {ex.Message}" });
         }
     }
 }

@@ -9,13 +9,11 @@
 /Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.Abstractions.dll
 /Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.Relational.dll
 /Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/Microsoft.Extensions.Caching.Memory.dll
-/Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/Microsoft.Extensions.Configuration.Abstractions.dll
 /Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/Microsoft.Extensions.DependencyInjection.dll
 /Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll
 /Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/Microsoft.Extensions.Logging.dll
 /Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/Microsoft.Extensions.Logging.Abstractions.dll
 /Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/Microsoft.Extensions.Options.dll
-/Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/Microsoft.Extensions.Primitives.dll
 /Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/Microsoft.IdentityModel.Abstractions.dll
 /Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/Microsoft.IdentityModel.JsonWebTokens.dll
 /Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/Microsoft.IdentityModel.Logging.dll
@@ -122,3 +120,4 @@
 /Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/tr/Microsoft.CodeAnalysis.Workspaces.resources.dll
 /Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/zh-Hans/Microsoft.CodeAnalysis.Workspaces.resources.dll
 /Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/zh-Hant/Microsoft.CodeAnalysis.Workspaces.resources.dll
+/Users/abdullah/Desktop/ToDo/Controllers/bin/Debug/net8.0/BCrypt.Net-Next.dll

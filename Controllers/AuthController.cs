@@ -7,13 +7,21 @@ using Microsoft.AspNetCore.Identity.Data;
 namespace Controllers
 {
     /*
-     * AuthController, kullanıcı kimlik doğrulama işlemleri için gerekli HTTP isteklerini yöneten bir denetleyicidir.
-     * Kullanıcı kayıt, giriş ve JWT token oluşturma işlevlerini barındırır.
+     * AuthController, kullanıcı kimlik doğrulama ve yetkilendirme işlemleri için HTTP endpoint'leri sağlar.
+     * Bu controller:
+     * - Yeni kullanıcı kaydı (Register)
+     * - Kullanıcı girişi (Login)
+     * - Kullanıcı kontrolü (UserExists)
+     * işlemlerini yönetir ve JWT token tabanlı kimlik doğrulama sistemi kullanır.
      */
     [ApiController]
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
+        /*
+         * _authService: Kimlik doğrulama işlemleri için kullanılan servis
+         * Constructor Dependency Injection ile IAuthService enjekte edilir
+         */
         private readonly IAuthService _authService;
 
         public AuthController(IAuthService authService)
@@ -21,54 +29,83 @@ namespace Controllers
             _authService = authService;
         }
         
+        /*
+         * Yeni kullanıcı kaydı oluşturur.
+         * [HttpPost] - POST metodu ile çağrılır
+         * [FromBody] - RegisterDTO verisi request body'den alınır
+         *
+         * Dönüş Değerleri:
+         * 200 OK - Başarılı kayıt durumunda JWT token ve kullanıcı bilgileri
+         * 400 Bad Request - Geçersiz veri durumunda
+         * 409 Conflict - Kullanıcı adı zaten mevcutsa
+         */
         [HttpPost("register")]
-        public IActionResult Register([FromBody] RegisterDTO registerDto)
+        public async Task<IActionResult> Register([FromBody] RegisterDTO registerDto)
         {
             try
             {
-                _authService.RegisterUser(registerDto);
-                return Ok();
+                var responce = await _authService.RegisterUserAsync(registerDto);
+                return Ok(responce);
             }
             catch (InvalidOperationException ex)
             {
-                return Conflict(ex.Message);
+                return Conflict(new { message = ex.Message });
             }
             catch (ArgumentNullException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
-        // Kullanıcı girişi için endpoint
+        /*
+         * Kullanıcı girişi yapar ve JWT token oluşturur.
+         * [HttpPost] - POST metodu ile çağrılır
+         * [FromBody] - LoginDTO verisi request body'den alınır
+         *
+         * Dönüş Değerleri:
+         * 200 OK - Başarılı giriş durumunda JWT token ve kullanıcı bilgileri
+         * 400 Bad Request - Geçersiz veri durumunda
+         * 401 Unauthorized - Geçersiz kullanıcı adı veya şifre
+         */
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginDTO loginDto)
+        public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
         {
             try
             {
-                var user = _authService.Login(loginDto);
-                var token = _authService.GenerateToken(user);
-                return Ok(new { Token = token, User = user });
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Unauthorized(ex.Message); // Kullanıcı bulunamadı
+               var responce = await _authService.LoginAsync(loginDto);
+               return Ok(responce);
             }
             catch (UnauthorizedAccessException ex)
             {
-                return Unauthorized(ex.Message); // Geçersiz şifre
+                return Unauthorized(new { message = ex.Message });
             }
             catch (ArgumentNullException ex)
             {
-                return BadRequest(ex.Message); // Kullanıcı adı veya şifre boş
+                return BadRequest(new { message = ex.Message });
             }
         }
 
-        // Kullanıcı var mı kontrolü için endpoint
+        /*
+         * Kullanıcı adının sistemde var olup olmadığını kontrol eder.
+         * [HttpGet] - GET metodu ile çağrılır
+         * {username} - URL'den kullanıcı adı parametresi alınır
+         *
+         * Dönüş Değerleri:
+         * 200 OK - Kontrol sonucu (true/false)
+         * 400 Bad Request - Geçersiz kullanıcı adı
+         */
         [HttpGet("exists/{username}")]
-        public IActionResult UserExists(string username)
+        public async Task<IActionResult> UserExists(string username)
         {
-            var exists = _authService.UserExists(username);
-            return Ok(new { Exists = exists });
+            try
+            {
+                var exists = await _authService.UserExistsAsync(username);
+                return Ok(new { Exists = exists });
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }
