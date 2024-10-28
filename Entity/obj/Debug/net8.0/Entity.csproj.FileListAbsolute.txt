@@ -10,3 +10,4 @@
 /Users/abdullah/Desktop/ToDo/Entity/obj/Debug/net8.0/refint/Entity.dll
 /Users/abdullah/Desktop/ToDo/Entity/obj/Debug/net8.0/Entity.pdb
 /Users/abdullah/Desktop/ToDo/Entity/obj/Debug/net8.0/ref/Entity.dll
+/Users/abdullah/Desktop/ToDo/Entity/obj/Debug/net8.0/Entity.csproj.AssemblyReference.cache
