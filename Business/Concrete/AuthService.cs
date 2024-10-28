@@ -12,10 +12,24 @@ namespace Business.Concrete
 {
     public class AuthService : IAuthService
     {
+        /*
+         * _userRepository: Kullanıcı işlemleri için kullanılan repository instance'ı
+         * _secretKey: JWT token imzalama için kullanılan gizli anahtar
+         * _audience: JWT token'ın hedef kitlesi
+         * _issuer: JWT token'ı oluşturan kaynak
+         * _tokenExpirationInHours: Token'ın geçerlilik süresi (saat cinsinden)
+         */
         private readonly IUserRepository _userRepository;
         private readonly string _secretKey, _audience, _issuer;
         private readonly int _tokenExpirationInHours;
 
+        /*
+         * AuthService sınıfı, JWT tabanlı kimlik doğrulama işlemlerini yürütür. Bu sınıf, kullanıcı verilerini almak
+         * için IUserRepository arayüzünü kullanır ve JWT yapılandırma bilgilerini almak için IConfiguration arayüzünden
+         * yararlanır. Constructor, JWT için gerekli yapılandırma değerlerini kontrol eder ve herhangi bir değer eksikse
+         * InvalidOperationException fırlatır. Token süresini yapılandırmadan alır, belirtilmemişse varsayılan olarak 24
+         * saat kullanır.
+         */
         public AuthService(IUserRepository userRepository, IConfiguration configuration)
         {
             _userRepository = userRepository;
